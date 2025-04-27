@@ -1,4 +1,4 @@
-#include "IntBST.h"
+#include "intbst.h"
 
 IntBST::IntBST() : root(0) { }
 
