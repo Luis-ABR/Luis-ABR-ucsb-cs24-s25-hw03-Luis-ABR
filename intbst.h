@@ -1,5 +1,3 @@
-// intbst.h
-
 #ifndef INTBST_H
 #define INTBST_H
 
@@ -7,41 +5,38 @@
 using namespace std;
 
 class IntBST {
-
 private:
     struct Node {
         int data;
         Node* left;
         Node* right;
-        Node(int d) : data(d), left(nullptr), right(nullptr) {}
+        Node(int d) : data(d), left(0), right(0) { }
     };
 
     Node* root;
 
 public:
-    IntBST();              // constructor
-    ~IntBST();             // destructor
+    IntBST();
+    ~IntBST();
 
     bool insert(int value);
-    void printPreOrder() const;
     void printInOrder() const;
     void printPostOrder() const;
     int sum() const;
     int count() const;
     bool contains(int value) const;
-    int getPredecessor(int value) const;
-    int getSuccessor(int value) const;
-    bool remove(int value);
+    void clear();
 
 private:
-    // helper functions
-    void printPreOrder(Node* n) const;
+    void destructorHelper(Node* n);
+    bool insert(Node*& n, int value);
     void printInOrder(Node* n) const;
     void printPostOrder(Node* n) const;
+    void printInOrderHelper(Node* n, bool& isFirst) const;
+    void printPostOrderHelper(Node* n, bool& isFirst) const;
     int sum(Node* n) const;
     int count(Node* n) const;
-    Node* getNodeFor(int value, Node* n) const;
-    void clear(Node* n);
+    bool contains(Node* n, int value) const;
 };
 
 #endif
