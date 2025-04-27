@@ -14,22 +14,37 @@ private:
     };
     Node* root;
 
-    void insert(Node*& node, int value);
-    void printInOrder(Node* node) const;
-    void printPostOrder(Node* node) const;
-    int count(Node* node) const;
-    int sum(Node* node) const;
-    bool contains(Node* node, int value) const;
+    // Private helper methods
+    bool insertHelper(Node*& node, int value);
+    void printInOrderHelper(Node* node) const;
+    void printPostOrderHelper(Node* node) const;
+    int countHelper(Node* node) const;
+    int sumHelper(Node* node) const;
+    bool containsHelper(Node* node, int value) const;
+    void destructorHelper(Node* node);
+    Node* findPredecessor(int value) const;
+    Node* findSuccessor(int value) const;
+    Node* findMin(Node* node) const;
+    Node* findMax(Node* node) const;
+    bool removeHelper(Node*& node, int value);
+    void printInOrderReverseHelper(Node* node) const;
+    void printAlternateHelper(Node* node) const;
 
 public:
     IntBST();
     ~IntBST();
-    void insert(int value);
+    bool insert(int value);
     void printInOrder() const;
     void printPostOrder() const;
     int count() const;
     int sum() const;
     bool contains(int value) const;
+    void clear();
+    int getPredecessor(int value) const;
+    int getSuccessor(int value) const;
+    bool remove(int value);
+    void printInOrderReverse() const;
+    void printAlternate() const;
 };
 
 #endif

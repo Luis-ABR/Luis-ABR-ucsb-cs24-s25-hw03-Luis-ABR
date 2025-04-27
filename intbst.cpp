@@ -1,109 +1,308 @@
 #include "intbst.h"
 
-// Constructor
-IntBST::IntBST() : root(nullptr) {}
+IntBST::IntBST() : root(nullptr) { }
 
-// Destructor
 IntBST::~IntBST() {
-    // Free all nodes
-    while (root != nullptr) {
-        insert(root, 0);  // dummy operation to trigger recursive deletion
+    clear();
+}
+
+void IntBST::destructorHelper(Node* n) {
+    if (!n) return;
+    destructorHelper(n->left);
+    destructorHelper(n->right);
+    delete n;
+}
+
+bool IntBST::insert(int value) {
+    return insertHelper(root, value);
+}
+
+bool IntBST::insertHelper(Node*& n, int value) {
+    if (!n) {
+        n = new Node(value);
+        return true;
+    }
+    if (value < n->data) {
+        return insertHelper(n->left, value);
+    }
+    else if (value > n->data) {
+        return insertHelper(n->right, value);
+    }
+    else {
+        return false; // already in tree
     }
 }
 
-// Public insert
-void IntBST::insert(int value) {
-    insert(root, value);
-}
-
-// Private insert
-void IntBST::insert(Node*& node, int value) {
-    if (node == nullptr) {
-        node = new Node(value);
-    } else if (value < node->data) {
-        insert(node->left, value);
-    } else {
-        insert(node->right, value);
-    }
-}
-
-// Public printInOrder
 void IntBST::printInOrder() const {
     if (!root) {
-        cout << endl;
+        cout << "";  // Empty line for empty tree
         return;
     }
-    printInOrder(root);
-    cout << endl;
+    
+    printInOrderHelper(root);
 }
 
-// Private printInOrder
-void IntBST::printInOrder(Node* node) const {
-    if (!node) return;
-    printInOrder(node->left);
-    cout << node->data << " ";
-    printInOrder(node->right);
+void IntBST::printInOrderHelper(Node* n) const {
+    if (!n) return;
+    
+    if (n->left) {
+        printInOrderHelper(n->left);
+        cout << " ";
+    }
+    
+    cout << n->data;
+    
+    if (n->right) {
+        cout << " ";
+        printInOrderHelper(n->right);
+    }
 }
 
-// Public printPostOrder
 void IntBST::printPostOrder() const {
     if (!root) {
-        cout << endl;
+        cout << "";  // Empty line for empty tree
         return;
     }
-    printPostOrder(root);
-    cout << endl;
+    
+    printPostOrderHelper(root);
 }
 
-// Private printPostOrder
-void IntBST::printPostOrder(Node* node) const {
-    if (!node) return;
-    printPostOrder(node->left);
-    printPostOrder(node->right);
-    cout << node->data << " ";
+void IntBST::printPostOrderHelper(Node* n) const {
+    if (!n) return;
+    
+    if (n->left) {
+        printPostOrderHelper(n->left);
+        cout << " ";
+    }
+    
+    if (n->right) {
+        printPostOrderHelper(n->right);
+        cout << " ";
+    }
+    
+    cout << n->data;
 }
 
-// Public count
 int IntBST::count() const {
-    int total = count(root);
-    cout << "Count is: " << total << endl;
-    return total;
+    cout << "Count is: ";
+    return countHelper(root);
 }
 
-// Private count
-int IntBST::count(Node* node) const {
-    if (!node) return 0;
-    return 1 + count(node->left) + count(node->right);
+int IntBST::countHelper(Node* n) const {
+    if (!n) return 0;
+    return 1 + countHelper(n->left) + countHelper(n->right);
 }
 
-// Public sum
 int IntBST::sum() const {
-    int total = sum(root);
-    cout << "Sum is: " << total << endl;
-    return total;
+    cout << "Sum is: ";
+    return sumHelper(root);
 }
 
-// Private sum
-int IntBST::sum(Node* node) const {
-    if (!node) return 0;
-    return node->data + sum(node->left) + sum(node->right);
+int IntBST::sumHelper(Node* n) const {
+    if (!n) return 0;
+    return n->data + sumHelper(n->left) + sumHelper(n->right);
 }
 
-// Public contains
 bool IntBST::contains(int value) const {
-    bool found = contains(root, value);
+    bool found = containsHelper(root, value);
     if (found) {
-        cout << value << " found in bst" << endl;
+        cout << value << " found in bst";
     } else {
-        cout << value << " not found in bst" << endl;
+        cout << value << " not found in bst";
     }
     return found;
 }
 
-// Private contains
-bool IntBST::contains(Node* node, int value) const {
+bool IntBST::containsHelper(Node* n, int value) const {
+    if (!n) return false;
+    if (n->data == value) return true;
+    else if (value < n->data) return containsHelper(n->left, value);
+    else return containsHelper(n->right, value);
+}
+
+void IntBST::clear() {
+    destructorHelper(root);
+    root = nullptr;
+}
+
+// Find minimum value node in a subtree
+IntBST::Node* IntBST::findMin(Node* node) const {
+    if (!node) return nullptr;
+    while (node->left) {
+        node = node->left;
+    }
+    return node;
+}
+
+// Find maximum value node in a subtree
+IntBST::Node* IntBST::findMax(Node* node) const {
+    if (!node) return nullptr;
+    while (node->right) {
+        node = node->right;
+    }
+    return node;
+}
+
+// Find predecessor for a given value
+IntBST::Node* IntBST::findPredecessor(int value) const {
+    if (!root) return nullptr;
+    
+    Node* target = nullptr;
+    Node* predecessor = nullptr;
+    Node* current = root;
+    
+    // First find the node with the target value
+    while (current && current->data != value) {
+        if (value < current->data) {
+            current = current->left;
+        } else {
+            predecessor = current;  // Potential predecessor
+            current = current->right;
+        }
+    }
+    
+    if (!current) return nullptr;  // Value not found
+    target = current;
+    
+    // If node has a left subtree, predecessor is the max in that subtree
+    if (target->left) {
+        return findMax(target->left);
+    }
+    
+    // Otherwise, predecessor is the last node we came from when going right
+    return predecessor;
+}
+
+// Find successor for a given value
+IntBST::Node* IntBST::findSuccessor(int value) const {
+    if (!root) return nullptr;
+    
+    Node* target = nullptr;
+    Node* successor = nullptr;
+    Node* current = root;
+    
+    // First find the node with the target value
+    while (current && current->data != value) {
+        if (value > current->data) {
+            current = current->right;
+        } else {
+            successor = current;  // Potential successor
+            current = current->left;
+        }
+    }
+    
+    if (!current) return nullptr;  // Value not found
+    target = current;
+    
+    // If node has a right subtree, successor is the min in that subtree
+    if (target->right) {
+        return findMin(target->right);
+    }
+    
+    // Otherwise, successor is the last node we came from when going left
+    return successor;
+}
+
+int IntBST::getPredecessor(int value) const {
+    Node* pred = findPredecessor(value);
+    cout << "Predecessor of " << value << " is ";
+    if (pred) {
+        cout << pred->data;
+        return pred->data;
+    }
+    cout << "0";  // Default value when no predecessor
+    return 0;
+}
+
+int IntBST::getSuccessor(int value) const {
+    Node* succ = findSuccessor(value);
+    cout << "Successor of " << value << " is ";
+    if (succ) {
+        cout << succ->data;
+        return succ->data;
+    }
+    cout << "0";  // Default value when no successor
+    return 0;
+}
+
+bool IntBST::remove(int value) {
+    bool result = removeHelper(root, value);
+    cout << "BST print in order after remove is:";
+    if (root) cout << " ";
+    printInOrder();
+    return result;
+}
+
+bool IntBST::removeHelper(Node*& node, int value) {
     if (!node) return false;
-    if (node->data == value) return true;
-    if (value < node->data) return contains(node->left, value);
-    else return contains(node->right, value);
+    
+    if (value < node->data) {
+        return removeHelper(node->left, value);
+    } 
+    else if (value > node->data) {
+        return removeHelper(node->right, value);
+    }
+    else {
+        // Case 1: Leaf node
+        if (!node->left && !node->right) {
+            delete node;
+            node = nullptr;
+        }
+        // Case 2: One child
+        else if (!node->left) {
+            Node* temp = node;
+            node = node->right;
+            delete temp;
+        }
+        else if (!node->right) {
+            Node* temp = node;
+            node = node->left;
+            delete temp;
+        }
+        // Case 3: Two children
+        else {
+            // Find successor (minimum value in right subtree)
+            Node* successor = findMin(node->right);
+            node->data = successor->data;
+            removeHelper(node->right, successor->data);
+        }
+        return true;
+    }
+}
+
+void IntBST::printInOrderReverse() const {
+    printInOrderReverseHelper(root);
+}
+
+void IntBST::printInOrderReverseHelper(Node* node) const {
+    if (!node) return;
+    
+    printInOrderReverseHelper(node->right);
+    cout << node->data << " ";
+    printInOrderReverseHelper(node->left);
+}
+
+void IntBST::printAlternate() const {
+    printAlternateHelper(root);
+}
+
+void IntBST::printAlternateHelper(Node* node) const {
+    if (!node) return;
+    
+    cout << node->data << " ";
+    
+    Node* successor = findSuccessor(node->data);
+    Node* predecessor = findPredecessor(node->data);
+    
+    if (successor) {
+        cout << successor->data << " ";
+    }
+    
+    if (predecessor) {
+        cout << predecessor->data << " ";
+    }
+    
+    // Continue with children
+    printAlternateHelper(node->left);
+    printAlternateHelper(node->right);
 }
