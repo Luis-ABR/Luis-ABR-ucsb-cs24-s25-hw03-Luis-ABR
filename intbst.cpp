@@ -35,7 +35,7 @@ bool IntBST::insertHelper(Node*& n, int value) {
 
 void IntBST::printInOrder() const {
     if (!root) {
-        cout << "";  // Empty line for empty tree
+        // Print nothing for empty tree
         return;
     }
     
@@ -60,7 +60,7 @@ void IntBST::printInOrderHelper(Node* n) const {
 
 void IntBST::printPostOrder() const {
     if (!root) {
-        cout << "";  // Empty line for empty tree
+        // Print nothing for empty tree
         return;
     }
     
@@ -84,7 +84,6 @@ void IntBST::printPostOrderHelper(Node* n) const {
 }
 
 int IntBST::count() const {
-    cout << "Count is: ";
     return countHelper(root);
 }
 
@@ -94,7 +93,6 @@ int IntBST::countHelper(Node* n) const {
 }
 
 int IntBST::sum() const {
-    cout << "Sum is: ";
     return sumHelper(root);
 }
 
@@ -104,13 +102,7 @@ int IntBST::sumHelper(Node* n) const {
 }
 
 bool IntBST::contains(int value) const {
-    bool found = containsHelper(root, value);
-    if (found) {
-        cout << value << " found in bst";
-    } else {
-        cout << value << " not found in bst";
-    }
-    return found;
+    return containsHelper(root, value);
 }
 
 bool IntBST::containsHelper(Node* n, int value) const {
@@ -205,31 +197,22 @@ IntBST::Node* IntBST::findSuccessor(int value) const {
 
 int IntBST::getPredecessor(int value) const {
     Node* pred = findPredecessor(value);
-    cout << "Predecessor of " << value << " is ";
     if (pred) {
-        cout << pred->data;
         return pred->data;
     }
-    cout << "0";  // Default value when no predecessor
-    return 0;
+    return 0;  // Default value when no predecessor
 }
 
 int IntBST::getSuccessor(int value) const {
     Node* succ = findSuccessor(value);
-    cout << "Successor of " << value << " is ";
     if (succ) {
-        cout << succ->data;
         return succ->data;
     }
-    cout << "0";  // Default value when no successor
-    return 0;
+    return 0;  // Default value when no successor
 }
 
 bool IntBST::remove(int value) {
     bool result = removeHelper(root, value);
-    cout << "BST print in order after remove is:";
-    if (root) cout << " ";
-    printInOrder();
     return result;
 }
 
