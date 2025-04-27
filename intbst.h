@@ -10,33 +10,26 @@ private:
         int data;
         Node* left;
         Node* right;
-        Node(int d) : data(d), left(0), right(0) { }
+        Node(int d) : data(d), left(nullptr), right(nullptr) {}
     };
-
     Node* root;
+
+    void insert(Node*& node, int value);
+    void printInOrder(Node* node) const;
+    void printPostOrder(Node* node) const;
+    int count(Node* node) const;
+    int sum(Node* node) const;
+    bool contains(Node* node, int value) const;
 
 public:
     IntBST();
     ~IntBST();
-
-    bool insert(int value);
+    void insert(int value);
     void printInOrder() const;
     void printPostOrder() const;
-    int sum() const;
     int count() const;
+    int sum() const;
     bool contains(int value) const;
-    void clear();
-
-private:
-    void destructorHelper(Node* n);
-    bool insert(Node*& n, int value);
-    void printInOrder(Node* n) const;
-    void printPostOrder(Node* n) const;
-    void printInOrderHelper(Node* n, bool& isFirst) const;
-    void printPostOrderHelper(Node* n, bool& isFirst) const;
-    int sum(Node* n) const;
-    int count(Node* n) const;
-    bool contains(Node* n, int value) const;
 };
 
 #endif

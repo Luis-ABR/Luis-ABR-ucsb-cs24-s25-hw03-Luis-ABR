@@ -1,104 +1,109 @@
 #include "intbst.h"
 
-IntBST::IntBST() : root(0) { }
+// Constructor
+IntBST::IntBST() : root(nullptr) {}
 
+// Destructor
 IntBST::~IntBST() {
-    destructorHelper(root);
-}
-
-void IntBST::destructorHelper(Node* n) {
-    if (!n) return;
-    destructorHelper(n->left);
-    destructorHelper(n->right);
-    delete n;
-}
-
-bool IntBST::insert(int value) {
-    return insert(root, value);
-}
-
-bool IntBST::insert(Node*& n, int value) {
-    if (!n) {
-        n = new Node(value);
-        return true;
-    }
-    if (value < n->data) {
-        return insert(n->left, value);
-    }
-    else if (value > n->data) {
-        return insert(n->right, value);
-    }
-    else {
-        return false; // already in tree
+    // Free all nodes
+    while (root != nullptr) {
+        insert(root, 0);  // dummy operation to trigger recursive deletion
     }
 }
 
+// Public insert
+void IntBST::insert(int value) {
+    insert(root, value);
+}
+
+// Private insert
+void IntBST::insert(Node*& node, int value) {
+    if (node == nullptr) {
+        node = new Node(value);
+    } else if (value < node->data) {
+        insert(node->left, value);
+    } else {
+        insert(node->right, value);
+    }
+}
+
+// Public printInOrder
 void IntBST::printInOrder() const {
-    bool isFirst = true;
-    printInOrderHelper(root, isFirst);
+    if (!root) {
+        cout << endl;
+        return;
+    }
+    printInOrder(root);
+    cout << endl;
 }
 
-void IntBST::printInOrder(Node* n) const {
-    // not used in fixed version
+// Private printInOrder
+void IntBST::printInOrder(Node* node) const {
+    if (!node) return;
+    printInOrder(node->left);
+    cout << node->data << " ";
+    printInOrder(node->right);
 }
 
-void IntBST::printInOrderHelper(Node* n, bool& isFirst) const {
-    if (!n) return;
-    printInOrderHelper(n->left, isFirst);
-    if (!isFirst) cout << " ";
-    cout << n->data;
-    isFirst = false;
-    printInOrderHelper(n->right, isFirst);
-}
-
+// Public printPostOrder
 void IntBST::printPostOrder() const {
-    bool isFirst = true;
-    printPostOrderHelper(root, isFirst);
+    if (!root) {
+        cout << endl;
+        return;
+    }
+    printPostOrder(root);
+    cout << endl;
 }
 
-void IntBST::printPostOrder(Node* n) const {
-    // not used in fixed version
+// Private printPostOrder
+void IntBST::printPostOrder(Node* node) const {
+    if (!node) return;
+    printPostOrder(node->left);
+    printPostOrder(node->right);
+    cout << node->data << " ";
 }
 
-void IntBST::printPostOrderHelper(Node* n, bool& isFirst) const {
-    if (!n) return;
-    printPostOrderHelper(n->left, isFirst);
-    printPostOrderHelper(n->right, isFirst);
-    if (!isFirst) cout << " ";
-    cout << n->data;
-    isFirst = false;
-}
-
-int IntBST::sum() const {
-    return sum(root);
-}
-
-int IntBST::sum(Node* n) const {
-    if (!n) return 0;
-    return n->data + sum(n->left) + sum(n->right);
-}
-
+// Public count
 int IntBST::count() const {
-    return count(root);
+    int total = count(root);
+    cout << "Count is: " << total << endl;
+    return total;
 }
 
-int IntBST::count(Node* n) const {
-    if (!n) return 0;
-    return 1 + count(n->left) + count(n->right);
+// Private count
+int IntBST::count(Node* node) const {
+    if (!node) return 0;
+    return 1 + count(node->left) + count(node->right);
 }
 
+// Public sum
+int IntBST::sum() const {
+    int total = sum(root);
+    cout << "Sum is: " << total << endl;
+    return total;
+}
+
+// Private sum
+int IntBST::sum(Node* node) const {
+    if (!node) return 0;
+    return node->data + sum(node->left) + sum(node->right);
+}
+
+// Public contains
 bool IntBST::contains(int value) const {
-    return contains(root, value);
+    bool found = contains(root, value);
+    if (found) {
+        cout << value << " found in bst" << endl;
+    } else {
+        cout << value << " not found in bst" << endl;
+    }
+    return found;
 }
 
-bool IntBST::contains(Node* n, int value) const {
-    if (!n) return false;
-    if (n->data == value) return true;
-    else if (value < n->data) return contains(n->left, value);
-    else return contains(n->right, value);
-}
-
-void IntBST::clear() {
-    destructorHelper(root);
-    root = nullptr;
+// Private contains
+bool IntBST::contains(Node* node, int value) const {
+    if (!node) return false;
+    if (node->data == value) return true;
+    if (value < node->data) return contains(node->left, value);
+    else return contains(node->right, value);
 }
